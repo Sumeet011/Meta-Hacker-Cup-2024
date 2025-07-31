@@ -1,0 +1,56 @@
+# Open input and output files 
+with open('input.txt', 'r') as infile, open('output.txt', 'w') as outfile:
+    lines = infile.readlines()
+    index = 0
+
+    T = int(lines[index].strip())
+    index += 1
+    start = 1
+
+    while start <= T:
+        # Read N and K from the same line
+        N, K = map(int, lines[index].strip().split())
+        index += 1
+
+        arr = []
+        total_sum = 0
+        minimum = float('inf')
+        second_min = float('inf')
+
+        if N==1:
+            val = int(lines[index].strip())
+            index += 1
+            result = 'YES' if val <= K else 'NO'
+            outfile.write(f"Case #{start}: {result}\n")
+            start += 1
+            continue
+        if N == 2:
+            val1 = int(lines[index].strip())
+            index += 1
+            val2 = int(lines[index].strip())
+            index += 1
+            result = 'YES' if min(val1,val2) <= K else 'NO'
+            outfile.write(f"Case #{start}: {result}\n")
+            start += 1
+            continue
+
+
+        for _ in range(N):
+            val = int(lines[index].strip())
+            index += 1
+            arr.append(val)
+
+            if val < minimum:
+                second_min = minimum
+                minimum = val
+            elif val < second_min:
+                second_min = val
+        
+        if N%2== 0:
+            required = minimum * (2*N-3)
+        else:
+            required = minimum * (2*N-3)    
+        result = 'YES' if required <= K else 'NO'
+        outfile.write(f"Case #{start}: {result}\n")
+
+        start += 1
