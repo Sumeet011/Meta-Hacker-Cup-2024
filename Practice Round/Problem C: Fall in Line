@@ -1,0 +1,65 @@
+import random
+from math import gcd
+from collections import defaultdict
+
+# Function to normalize the slope to avoid precision issues
+def get_slope(p1, p2):
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
+    if dx == 0:
+        return ('inf', 0)  # vertical line
+    if dy == 0:
+        return (0, 0)      # horizontal line
+    g = gcd(dy, dx)
+    return (dy // g, dx // g)
+
+# Function to check how many points lie on the same line
+def count_on_line(p1, p2, points):
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
+    count = 0
+    for px, py in points:
+        if (px - p1[0]) * dy == (py - p1[1]) * dx:
+            count += 1
+    return count
+
+# Main function
+def solve():
+    with open('input.txt', 'r') as infile:
+        lines = infile.readlines()
+
+    output_lines = []
+    index = 0
+    T = int(lines[index])
+    index += 1
+
+    for t in range(1, T + 1):
+        N = int(lines[index])
+        index += 1
+        points = []
+        for _ in range(N):
+            x, y = map(int, lines[index].split())
+            points.append((x, y))
+            index += 1
+
+        if N <= 2:
+            output_lines.append(f"Case #{t}: 0")
+            continue
+
+        max_on_line = 0
+        K = 40  # Number of trials
+
+        for _ in range(K):
+            p1, p2 = random.sample(points, 2)
+            count = count_on_line(p1, p2, points)
+            if count > max_on_line:
+                max_on_line = count
+
+        moves_required = N - max_on_line
+        output_lines.append(f"Case #{t}: {moves_required}")
+
+    with open('output.txt', 'w') as outfile:
+        for line in output_lines:
+            outfile.write(line + '\n')
+
+solve()
